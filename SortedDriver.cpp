@@ -1,9 +1,8 @@
 // SortedDriver.cpp
 
-// tom bailey   1445  25 mar 2014
-// Construct sorted sequences and call functions that 
-//   process the sorted sequences.
-
+// Hayden Moritz
+// COSC 2030 - Lab 06
+// October 27, 2017
 
 #include "RandomUtilities.h"
 #include "ContainerPrinting.h"
@@ -12,10 +11,8 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-
-
+#include <stdlib.h>
 using namespace std;
-
 
 // post: a sorted vector of listSize random doubles from
 //         the range minNum to maxNum has been returned.
@@ -63,8 +60,52 @@ getWords(size_t numWords, size_t wordLength, string alphabet)
 double
 mostIsolated(vector<double> & number)
 {
-	// STUB  STUB  STUB
-	return -123.456;
+	double dist1 = 0;
+	double dist2 = 0;
+	double dist3 = 0;
+	double mostIso = 0;
+	double xCurr = 0;
+	double xDown = 0;
+	double xUp = 0;
+
+	for (int h = 0; h < number.size(); h++) {
+
+		// Check special case of first value
+		if (h == 0) {
+			xCurr = number[h];
+			xUp = number[h+1];
+			dist3 = xUp - xCurr;
+			mostIso = xCurr;
+		}
+		// Check special case of last value
+		else if (h == (number.size()-1)){
+			xCurr = number[h];
+			xDown = number[h - 1];
+			dist1 = xCurr - xDown;
+			if (dist1 > dist3) {
+				mostIso = xCurr;
+			}
+		}
+		else {
+			// Get distances between neighbors of current position
+			xCurr = number[h];
+			xDown = number[h - 1];
+			xUp = number[h + 1];
+			dist1 = xCurr - xDown;
+			dist2 = xUp - xCurr;
+			// Test each side for the bigger of the two distances
+			if (dist1 < dist2 && dist1 >= dist3) {
+				dist3 = dist1;
+				mostIso = xCurr;
+			}
+			else if (dist2 < dist1 && dist2 >= dist3) {
+				dist3 = dist2;
+				mostIso = xCurr;
+			}
+		}
+	}
+	// Return the most isolated value
+	return mostIso;
 }
 
 
@@ -74,8 +115,25 @@ mostIsolated(vector<double> & number)
 int
 unmatched(list<string> & A, list<string> & B)
 {
-	// STUB  STUB  STUB
-	return -1;
+	// Create counter
+	int total = 0;
+	// Create two iterators (one for each list)
+	// Also my attempt at humor
+	list<string>::iterator iterAtor = A.begin();
+	list<string>::iterator iterBtor = B.begin();
+
+	// Iterate through list a
+	for (iterAtor; iterAtor != A.end(); ++iterAtor) {
+		// Iterate through list b simultaneously
+		while ((*iterAtor > *iterBtor) && (iterBtor != B.end())) {
+			iterBtor++;
+		}
+		// If a value doesnt match, add one to the number of unmatched values
+		if (*iterAtor != *iterBtor) {
+			total++;
+		}
+	}
+	return total;
 }
 
 
